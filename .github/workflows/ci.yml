@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure TestContainers cloud
+      uses: atomicjar/testcontainers-cloud-setup-action@main
+      with:
+        wait: true
+        token: ${{ secrets.TC_CLOUD_TOKEN }}
+
+    - name: Setup Remote Docker
+      run: echo "DOCKER_HOST=$(cat ~/.testcontainers.properties | grep 'docker.host' | cut -d '=' -f2 | xargs)" >> $GITHUB_ENV
+
+    - name: Cache Bazel
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/bazel
+        key: ${{ runner.os }}-bazel-${{ hashFiles('.bazelversion', '.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel', 'MODULE.bazel') }}
+        restore-keys: |
+          ${{ runner.os }}-bazel-
+
+    - name: Build and Test
+      run: |
+        bazel build //...
+        bazel test --test_output=all //...

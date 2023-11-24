@@ -1,0 +1,50 @@
+load(
+  "@bazel_tools//tools/jdk:default_java_toolchain.bzl",
+  "default_java_toolchain", "DEFAULT_TOOLCHAIN_CONFIGURATION", "BASE_JDK9_JVM_OPTS", "DEFAULT_JAVACOPTS"
+)
+
+default_java_toolchain(
+  name = "repository_default_toolchain",
+  configuration = DEFAULT_TOOLCHAIN_CONFIGURATION,
+  java_runtime = "@bazel_tools//tools/jdk:remotejdk_17",
+  jvm_opts = BASE_JDK9_JVM_OPTS + ["--enable-preview"],
+  javacopts = DEFAULT_JAVACOPTS + ["--enable-preview"],
+  source_version = "17",
+  target_version = "17",
+)
+
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@contrib_rules_jvm//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+java_library(
+    name = "customers-lib",
+    srcs = glob(["src/main/java/**/*.java"]),
+    deps = [
+        artifact("org.postgresql:postgresql"),
+        artifact("ch.qos.logback:logback-classic"),
+    ],
+)
+
+java_library(
+    name = "customers-test-resources",
+    resources = glob(["src/test/resources/**/*"]),
+
+)
+
+java_test_suite(
+    name = "customers-lib-tests",
+    srcs = glob(["src/test/java/**/*.java"]),
+    runner = "junit5",
+    test_suffixes = [
+        "Test.java",
+        "Tests.java",
+    ],
+    runtime_deps = JUNIT5_DEPS,
+    deps = [
+        ":customers-lib",
+        ":customers-test-resources",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.testcontainers:postgresql"),
+    ],
+)

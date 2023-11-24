@@ -1,0 +1,7 @@
+/bazel-testcontainers-bazel-demo
+/bazel-bin
+/bazel-out
+/bazel-testlogs
+.idea
+*.iml
+*.ipr
