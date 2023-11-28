@@ -3,6 +3,6 @@ build --java_runtime_version=remotejdk_17
 build --tool_java_language_version=17
 build --tool_java_runtime_version=remotejdk_17
 
-# Allow DOCKER_HOST to leak into test actions
-test --test_env=DOCKER_HOST
+# Allow HOME, DOCKER_HOST to be accessible to test actions
 test --test_env=HOME
+test --test_env=DOCKER_HOST
