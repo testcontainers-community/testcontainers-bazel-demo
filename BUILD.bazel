@@ -1,0 +1,4 @@
+load("@gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/testcontainers-community/testcontainers-bazel-demo/products
+gazelle(name = "gazelle")
