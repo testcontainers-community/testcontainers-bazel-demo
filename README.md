@@ -19,10 +19,3 @@ $ bazelisk build //products/...
 $ bazelisk test //customers/... --test_output=all
 $ bazelisk test //products/... --test_output=all
 ```
-
-
-## Update go dependencies
-
-```bash
-$ gazelle update-repos -from_file=go.work -to_macro=deps.bzl%go_deps -prune=True
-```
